@@ -1,7 +1,4 @@
-[![Build Status](https://travis-ci.org/teverett/osgi-example.png?branch=master)](https://travis-ci.org/teverett/osgi-example)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/578be0a3eb514286b36688ac3e6e0579)](https://www.codacy.com/app/teverett/osgi-example?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=teverett/osgi-example&amp;utm_campaign=Badge_Grade)
-
-osgi-example 
+osgi-example [![Build Status](https://travis-ci.org/teverett/osgi-example.png?branch=master)](https://travis-ci.org/teverett/osgi-example)
 ============
 
 A simple example which publishes an OSGI service

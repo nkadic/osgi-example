@@ -7,6 +7,9 @@
 	<name>khubla.com OSGI example</name>
 	<modules>
 		<module>basic</module>
-		<module>restlet</module>
+		<module>service</module>
+		<module>rest</module>
+		<module>service-event-listener-bundle</module>
+		<module>dictionary-service-bundle</module>
 	</modules>
 </project>	

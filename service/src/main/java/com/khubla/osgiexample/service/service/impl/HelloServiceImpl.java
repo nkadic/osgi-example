@@ -1,8 +1,8 @@
-package com.khubla.osgiexample.basic.service.impl;
+package com.khubla.osgiexample.service.service.impl;
 
 import java.util.Date;
 
-import com.khubla.osgiexample.basic.service.HelloService;
+import com.khubla.osgiexample.service.service.HelloService;
 
 /**
  * @author tome
