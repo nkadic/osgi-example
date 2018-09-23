@@ -11,5 +11,7 @@
 		<module>rest</module>
 		<module>service-event-listener-bundle</module>
 		<module>dictionary-service-bundle</module>
+		<module>spell-checker-service-bundle</module>
+		<module>spell-checker-service-using-declarative-services</module>
 	</modules>
 </project>	
