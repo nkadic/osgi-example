@@ -58,8 +58,8 @@ START LEVEL 1
 
 
 
-####Apache Felix Tutorial Example 6 ####
-####Example 6 - Spell Checker Service Bundle ####
+#### Apache Felix Tutorial Example 6 ####
+#### Example 6 - Spell Checker Service Bundle ####
 
 
 ```
@@ -90,8 +90,8 @@ g!
 00:03:51
 ```
 
-####Apache Felix Tutorial Example 9 ####
-####Example 9 - Spell Checker Service using Declarative Services ####
+#### Apache Felix Tutorial Example 9 ####
+#### Example 9 - Spell Checker Service using Declarative Services ####
 
 ```
 g! felix:install mybundles/spell-checker-service-using-declarative-services-1.0-SNAPSHOT.jar                                                                                           
