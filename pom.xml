@@ -13,5 +13,6 @@
 		<module>dictionary-service-bundle</module>
 		<module>spell-checker-service-bundle</module>
 		<module>spell-checker-service-using-declarative-services</module>
+		<module>dictionary-client-bundle</module>
 	</modules>
 </project>	
