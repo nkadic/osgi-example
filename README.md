@@ -57,6 +57,21 @@ START LEVEL 1
 ```
 
 
+#### Apache Felix Tutorial Example 3 ####
+#### Example 3 - Dictionary Client Bundle ####
+
+```
+g! g! felix:install mybundles/dictionary-client-bundle-1.0-SNAPSHOT.jar                                                                 Ex1: Bundle with location  file:/C:/SW/felix-6.0.1/felix-framework-6.0.1/mybundles/dictionary-client-bundle-1.0-SNAPSHOT.jar INSTALLED.Bundle ID: 30                                       
+
+g! start 30                                                                                                                                                                            
+g! start 30                                                                                 00:31:40Ex1: Bundle with location  file:/C:/SW/felix-6.0.1/felix-framework-6.0.1/mybundles/dictionary-client-bundle-1.0-SNAPSHOT.jar RESOLVED.
+Enter a blank line to exit.
+Enter word: Incorrect.
+Enter word: Incorrect.
+Enter word: Correct.
+```
+
+
 
 #### Apache Felix Tutorial Example 6 ####
 #### Example 6 - Spell Checker Service Bundle ####
