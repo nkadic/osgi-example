@@ -9,14 +9,17 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+//import org.osgi.service.component.annotations.Component;
+//import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import tutorial.example2.service.DictionaryService;
 import tutorial.example6.service.SpellChecker;
 
-
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
 /**
  * This class re-implements the spell check service of Example 6. This service
  * implementation behaves exactly like the one in Example 6, specifically, it
@@ -28,9 +31,13 @@ import tutorial.example6.service.SpellChecker;
  * dependencies to the Service Component Runtime, which automatically manages them and it
  * also automatically registers the spell check services as appropriate.
  */
-@Component
+@Component (immediate = true)
 public class SpellCheckServiceImpl implements SpellChecker
 {
+
+    private volatile List<DictionaryService> dictionaryService = new ArrayList<DictionaryService>();
+    private volatile DictionaryService aDictionaryService;
+
     /**
      * List of service objects.
      *
@@ -38,8 +45,24 @@ public class SpellCheckServiceImpl implements SpellChecker
      * with the current set of available dictionary services.
      * At least one dictionary service is required.
      */
-    @Reference(policy=ReferencePolicy.DYNAMIC, cardinality=ReferenceCardinality.AT_LEAST_ONE)
-    private volatile List<DictionaryService> m_svcObjList;
+//    @Reference(type = '*', service = DictionaryService.class, unbind = "unsetDictionaryService")
+//    public void setDictionaryService(List<DictionaryService> dictionaryService) {
+//        this.dictionaryService = dictionaryService;
+//    }
+//
+//    public void unsetDictionaryService(List<DictionaryService> dictionaryService) {
+//    }
+
+
+    @Reference(type = '*', service = DictionaryService.class, unbind = "unsetDictionaryService")
+    public void setDictionaryService(DictionaryService myDictionaryService) {
+        this.aDictionaryService = myDictionaryService;
+        dictionaryService.add(myDictionaryService);
+    }
+
+    public void unsetDictionaryService(DictionaryService removeDictionaryService) {
+        dictionaryService.remove(removeDictionaryService);
+    }
 
     /**
      * Checks a given passage for spelling errors. A passage is any number of
@@ -66,7 +89,7 @@ public class SpellCheckServiceImpl implements SpellChecker
 
         // Put the current set of services in a local field
         // the field m_svcObjList might be modified concurrently
-        final List<DictionaryService> localServices = m_svcObjList;
+        final List<DictionaryService> localServices = dictionaryService;
 
         // Loop through each word in the passage.
         while ( st.hasMoreTokens() )

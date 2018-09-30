@@ -41,7 +41,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>tutorial.example6;tutorial.example2</Export-Package>
+                        <Export-Package>tutorial.example6,tutorial.example6.service,tutorial.example2.service,tutorial.example2</Export-Package>
                         <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
                         <Bundle-Activator>tutorial.example6.Activator</Bundle-Activator>
                         <Embed-Dependency>*;scope=compile|runtime;inline=false</Embed-Dependency>

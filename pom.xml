@@ -14,5 +14,8 @@
 		<module>spell-checker-service-bundle</module>
 		<module>spell-checker-service-using-declarative-services</module>
 		<module>dictionary-client-bundle</module>
+		<module>spell-checker-client</module>
+		<module>scr-dictionary-service</module>
+
 	</modules>
 </project>	
