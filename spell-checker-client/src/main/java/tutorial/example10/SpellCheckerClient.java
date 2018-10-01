@@ -2,15 +2,28 @@ package tutorial.example10;
 
 
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
+//import aQute.bnd.annotation.component.Activate;
+//import aQute.bnd.annotation.component.Component;
+//import aQute.bnd.annotation.component.Deactivate;
+//import aQute.bnd.annotation.component.Reference;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.References;
+
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import tutorial.example6.service.SpellChecker;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * This annotation declares the class as an SCR component and specifies
@@ -20,9 +33,17 @@ import java.util.Arrays;
  *
  */
 @Component(immediate = true)
+@References({
+        @Reference(
+                name = SpellCheckerClient.SERVICE_NAME,
+                referenceInterface = SpellChecker.class,
+                policy = ReferencePolicy.DYNAMIC,
+                cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE)
+})
 public class SpellCheckerClient {
+    public static final String SERVICE_NAME = "spellChecker";
 
-    private volatile SpellChecker spellChecker;
+    private Map<String, SpellChecker> spellChecker = new ConcurrentHashMap<String, SpellChecker>();
 
     public SpellCheckerClient() {
         System.out.println("GreetingServiceClient instantiated");
@@ -30,39 +51,29 @@ public class SpellCheckerClient {
     @Activate
     private void activate() {
         System.out.println("Ex1: activate");
-        String[] result = spellChecker.check("Greeting Service Client and Welcome to the OSGI Tutorial");
+        String[] result = spellChecker.get(SpellChecker.class.getClass().getCanonicalName()).check("Greeting Service Client and Welcome to the OSGI Tutorial");
         System.out.println("RESULTS:");
         System.out.println(Arrays.toString(result));
 
     }
 
-    /**
-     * This annotation is the declaration to SCR that this is the location to
-     * inject the GreetingService implementation. We have also included a
-     * non-default
-     * unbind method reference to indicate the "removeGreetingService" should be
-     * called
-     * if the GreetingService is no longer available. The default would have
-     * been to call
-     * a method by the same name as our injection method name prefixed by "un".
-     * In
-     * this case that would have been "unsetGreetingService".
-     */
 
-    @Reference(service = SpellChecker.class, unbind = "unsetSpellChecker")
-    public void setSpellChecker(SpellChecker spellChecker) {
+    public void bindSpellChecker(final SpellChecker service,
+                                 final Map<Object, Object> props) {
 
-        this.spellChecker = spellChecker;
+        this.spellChecker.put(service.getClass().getCanonicalName(), service);
     }
 
-    /**
-     * This method demonstrates the unbind life-cycle hook.
-     */
-    public void unsetSpellChecker(SpellChecker greetingService) {
+
+    public void unbindSpellChecker(final SpellChecker service,
+                                   final Map<Object, Object> props) {
+        this.spellChecker.remove(service.getClass().getCanonicalName());
+
     }
 
     @Deactivate
     public void deactivate() {
-        System.out.println("GreetingServiceClient deactivated");
+        System.out.println("SpellCheckerClient deactivated");
+
     }
 }

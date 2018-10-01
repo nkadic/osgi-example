@@ -6,20 +6,29 @@ package tutorial.example9;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 //import org.osgi.service.component.annotations.Component;
 //import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.References;
+
+
 import tutorial.example2.service.DictionaryService;
 import tutorial.example6.service.SpellChecker;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
+//import aQute.bnd.annotation.component.Activate;
+//import aQute.bnd.annotation.component.Deactivate;
+//import aQute.bnd.annotation.component.Reference;
 /**
  * This class re-implements the spell check service of Example 6. This service
  * implementation behaves exactly like the one in Example 6, specifically, it
@@ -31,37 +40,34 @@ import aQute.bnd.annotation.component.Reference;
  * dependencies to the Service Component Runtime, which automatically manages them and it
  * also automatically registers the spell check services as appropriate.
  */
-@Component (immediate = true)
+@Component(immediate = true)
+@References({
+        @Reference(
+                name = SpellCheckServiceImpl.SERVICE_NAME,
+                referenceInterface = DictionaryService.class,
+                policy = ReferencePolicy.DYNAMIC,
+                cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE)
+})
+@Service
 public class SpellCheckServiceImpl implements SpellChecker
 {
+    public static final String SERVICE_NAME = "dictionaryService";
 
-    private volatile List<DictionaryService> dictionaryService = new ArrayList<DictionaryService>();
-    private volatile DictionaryService aDictionaryService;
-
-    /**
-     * List of service objects.
-     *
-     * This field is managed by the Service Component Runtime and updated
-     * with the current set of available dictionary services.
-     * At least one dictionary service is required.
-     */
-//    @Reference(type = '*', service = DictionaryService.class, unbind = "unsetDictionaryService")
-//    public void setDictionaryService(List<DictionaryService> dictionaryService) {
-//        this.dictionaryService = dictionaryService;
-//    }
-//
-//    public void unsetDictionaryService(List<DictionaryService> dictionaryService) {
-//    }
+    private Map<String, DictionaryService> dictionaryService = new ConcurrentHashMap<String, DictionaryService>();
 
 
-    @Reference(type = '*', service = DictionaryService.class, unbind = "unsetDictionaryService")
-    public void setDictionaryService(DictionaryService myDictionaryService) {
-        this.aDictionaryService = myDictionaryService;
-        dictionaryService.add(myDictionaryService);
+
+    public void bindDictionaryService(final DictionaryService service,
+                                 final Map<Object, Object> props) {
+
+        this.dictionaryService.put(service.getClass().getCanonicalName(), service);
     }
 
-    public void unsetDictionaryService(DictionaryService removeDictionaryService) {
-        dictionaryService.remove(removeDictionaryService);
+
+    public void unbindDictionaryService(final DictionaryService service,
+                                   final Map<Object, Object> props) {
+        this.dictionaryService.remove(service.getClass().getCanonicalName());
+
     }
 
     /**
@@ -89,7 +95,6 @@ public class SpellCheckServiceImpl implements SpellChecker
 
         // Put the current set of services in a local field
         // the field m_svcObjList might be modified concurrently
-        final List<DictionaryService> localServices = dictionaryService;
 
         // Loop through each word in the passage.
         while ( st.hasMoreTokens() )
@@ -98,7 +103,7 @@ public class SpellCheckServiceImpl implements SpellChecker
             boolean correct = false;
 
             // Check each available dictionary for the current word.
-            for(final DictionaryService dictionary : localServices) {
+            for(final DictionaryService dictionary : dictionaryService.values()) {
                 if ( dictionary.checkWord( word ) )
                 {
                     correct = true;

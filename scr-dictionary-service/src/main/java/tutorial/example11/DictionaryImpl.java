@@ -1,12 +1,18 @@
 package tutorial.example11;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
+//import aQute.bnd.annotation.component.Activate;
+//import aQute.bnd.annotation.component.Component;
+//import aQute.bnd.annotation.component.Deactivate;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Deactivate;
 
 import tutorial.example2.service.DictionaryService;
 
 @Component(immediate = true)
+@Service
 public class DictionaryImpl implements DictionaryService {
 
     // The set of words contained in the dictionary.
