@@ -51,7 +51,17 @@ public class SpellCheckerClient {
     @Activate
     private void activate() {
         System.out.println("Ex1: activate");
-        String[] result = spellChecker.get(SpellChecker.class.getClass().getCanonicalName()).check("Greeting Service Client and Welcome to the OSGI Tutorial");
+
+
+        System.out.println("SpellChecker size : " + spellChecker.size());
+        for (String key : spellChecker.keySet()) {
+            System.out.println("key : " + key + ", val : " + getCanonicalName(spellChecker.get(key)));
+        }
+        SpellChecker[] spellCheckersArray = new SpellChecker[spellChecker.size()];
+
+        spellChecker.values().toArray(spellCheckersArray);
+
+        String[] result =spellCheckersArray[0].check("Greeting Service Client and Welcome to the OSGI Tutorial");
         System.out.println("RESULTS:");
         System.out.println(Arrays.toString(result));
 
@@ -60,14 +70,21 @@ public class SpellCheckerClient {
 
     public void bindSpellChecker(final SpellChecker service,
                                  final Map<Object, Object> props) {
+        System.out.println("BIND : " + getCanonicalName(service));
 
-        this.spellChecker.put(service.getClass().getCanonicalName(), service);
+        this.spellChecker.put(getCanonicalName(service), service);
+    }
+
+    private String getCanonicalName(SpellChecker service) {
+        return service.getClass().getCanonicalName();
     }
 
 
     public void unbindSpellChecker(final SpellChecker service,
                                    final Map<Object, Object> props) {
-        this.spellChecker.remove(service.getClass().getCanonicalName());
+        System.out.println("UNBIND : " + getCanonicalName(service));
+
+        this.spellChecker.remove(getCanonicalName(service));
 
     }
 
